@@ -1,17 +1,44 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --primary: #22989D;
+  --primary-hover: #1a7a7e;
+  --primary-light: #e9f5f5;
+  --background: #FCFAF7;
+  --foreground: #2C3333;
+  --card-bg: #FFFFFF;
+  --border: #F0EDE9;
+  --text-primary: #1D2323;
+  --text-secondary: #5A6363;
+  --gold: #C5A880;
+  
+  --font-sans: var(--font-noto-sans-kr), sans-serif;
+  --font-serif: var(--font-outfit), var(--font-noto-sans-kr), sans-serif;
+  
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* For dark mode representation, keep background warm or allow soft dark mode if requested.
+   Since it's a premium spa, we'll keep a soft warm cream aesthetic as primary. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #141818;
+    --foreground: #E4E7E7;
+    --card-bg: #1B2121;
+    --border: #283131;
+    --text-primary: #F0F3F3;
+    --text-secondary: #9AA3A3;
+    --primary-light: #16292A;
   }
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 html {
   height: 100%;
+  scroll-behavior: smooth;
 }
 
 html,
@@ -26,24 +53,42 @@ body {
   flex-direction: column;
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+  transition: all 0.2s ease;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
