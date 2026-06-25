@@ -14,7 +14,7 @@ export default function Home() {
           priority
         />
         <div className={styles.intro}>
-          <h1>안녕하세요, LeBodre입니다</h1>
+          <h1>안녕하세요. 르 보드레 Le Bodre : L&apos;esthétique 입니다.</h1>
           <p>
             Looking for a starting point or more instructions? Head over to{" "}
             <a
