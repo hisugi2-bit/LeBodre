@@ -85,7 +85,7 @@ export default function Home() {
           <div className={styles.storyImageWrapper}>
             <Image
               className={styles.storyImage}
-              src="/Gemini_Generated_Image_fnqlxafnqlxafnql.png"
+              src="/mixboard-image.png"
               alt="Pet spa philosophy representation"
               fill
               sizes="(max-width: 1024px) 100vw, 500px"
@@ -110,7 +110,7 @@ export default function Home() {
             <div className={styles.serviceImgWrapper}>
               <Image
                 className={styles.serviceImg}
-                src="/Gemini_Generated_Image_oa46imoa46imoa46.png"
+                src="/mixboard-image (1).png"
                 alt="Premium Aroma Spa"
                 fill
                 sizes="(max-width: 768px) 100vw, 500px"
@@ -129,7 +129,7 @@ export default function Home() {
             <div className={styles.serviceImgWrapper}>
               <Image
                 className={styles.serviceImg}
-                src="/Gemini_Generated_Image_qz3xr2qz3xr2qz3x.png"
+                src="/mixboard-image (2).png"
                 alt="Relaxing Massage"
                 fill
                 sizes="(max-width: 768px) 100vw, 500px"
@@ -148,7 +148,7 @@ export default function Home() {
             <div className={styles.serviceImgWrapper}>
               <Image
                 className={styles.serviceImg}
-                src="/Gemini_Generated_Image_tzlyi7tzlyi7tzly.png"
+                src="/mixboard-image (3).png"
                 alt="Custom Aroma Skincare"
                 fill
                 sizes="(max-width: 768px) 100vw, 500px"
@@ -167,7 +167,7 @@ export default function Home() {
             <div className={styles.serviceImgWrapper}>
               <Image
                 className={styles.serviceImg}
-                src="/Pet_care_information_for_beginners에서_202606181532.jpeg"
+                src="/mixboard-image (4).png"
                 alt="Private Slow Grooming"
                 fill
                 sizes="(max-width: 768px) 100vw, 500px"
@@ -253,7 +253,7 @@ export default function Home() {
           <div className={styles.instaPost}>
             <Image
               className={styles.instaPostImg}
-              src="/KakaoTalk_20260618_144140665.png"
+              src="/mixboard-image (5).png"
               alt="Instagram Post 1"
               fill
               sizes="(max-width: 768px) 100vw, 350px"
@@ -267,7 +267,7 @@ export default function Home() {
           <div className={styles.instaPost}>
             <Image
               className={styles.instaPostImg}
-              src="/KakaoTalk_20260624_112156937.jpg"
+              src="/mixboard-image (6).png"
               alt="Instagram Post 2"
               fill
               sizes="(max-width: 768px) 100vw, 350px"
@@ -281,7 +281,7 @@ export default function Home() {
           <div className={styles.instaPost}>
             <Image
               className={styles.instaPostImg}
-              src="/5efa21ba-50e4-415c-acb2-8943a715cd14.png"
+              src="/mixboard-image.png"
               alt="Instagram Post 3"
               fill
               sizes="(max-width: 768px) 100vw, 350px"
