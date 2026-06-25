@@ -249,7 +249,49 @@ export default function Home() {
             지금 이 순간, 르 보드레에서 온전한 휴식을 즐기고 있는 아이들을 만나보세요.
           </p>
         </div>
-        <div id="behold-widget-○○○" style={{ width: "100%", maxWidth: "1100px", marginTop: "50px" }}></div>
+        <div id="behold-widget-○○○" className={styles.instagramGrid}>
+          {/* Insta Post 1 */}
+          <div className={styles.instaPost}>
+            <Image
+              className={styles.instaPostImg}
+              src="/mixboard-image (5).png"
+              alt="Instagram Post 1"
+              fill
+              sizes="(max-width: 768px) 100vw, 350px"
+            />
+            <div className={styles.instaOverlay}>
+              온전한 쉼을 누리고 있는 코코의 스파 타임 🛁✨ #르보드레
+            </div>
+          </div>
+
+          {/* Insta Post 2 */}
+          <div className={styles.instaPost}>
+            <Image
+              className={styles.instaPostImg}
+              src="/mixboard-image (6).png"
+              alt="Instagram Post 2"
+              fill
+              sizes="(max-width: 768px) 100vw, 350px"
+            />
+            <div className={styles.instaOverlay}>
+              맞춤 아로마 솔루션 처방 중 🌿🔬 #펫아로마테라피
+            </div>
+          </div>
+
+          {/* Insta Post 3 */}
+          <div className={styles.instaPost}>
+            <Image
+              className={styles.instaPostImg}
+              src="/mixboard-image.png"
+              alt="Instagram Post 3"
+              fill
+              sizes="(max-width: 768px) 100vw, 350px"
+            />
+            <div className={styles.instaOverlay}>
+              그루밍 후 한결 가벼워진 표정의 솜이 🌸🐶 #슬로우그루밍
+            </div>
+          </div>
+        </div>
         <Script
           src="https://w.behold.so/widget.js"
           strategy="afterInteractive"
