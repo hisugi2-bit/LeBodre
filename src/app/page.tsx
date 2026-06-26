@@ -25,7 +25,7 @@ export default function Home() {
           <a href="#instagram" className={styles.navLink}>갤러리</a>
         </nav>
         <a
-          href="https://pf.kakao.com"
+          href="https://open.kakao.com/o/se93DXwi"
           target="_blank"
           rel="noopener noreferrer"
           className={styles.headerCta}
@@ -54,7 +54,7 @@ export default function Home() {
             </span>
           </h1>
           <a
-            href="https://pf.kakao.com"
+            href="https://open.kakao.com/o/se93DXwi"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.heroBtn}
@@ -304,7 +304,7 @@ export default function Home() {
       {/* ⑦ Sticky Bottom CTA Button */}
       <div className={styles.stickyCtaContainer}>
         <a
-          href="https://pf.kakao.com"
+          href="https://open.kakao.com/o/se93DXwi"
           target="_blank"
           rel="noopener noreferrer"
           className={styles.stickyCtaBtn}
