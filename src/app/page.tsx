@@ -249,7 +249,8 @@ export default function Home() {
             지금 이 순간, 르 보드레에서 온전한 휴식을 즐기고 있는 아이들을 만나보세요.
           </p>
         </div>
-        <div id="behold-widget-○○○" className={styles.instagramGrid}>
+        {/* @ts-ignore */}
+        <behold-widget feed-id="f0hZVynFI7lbuVLSHYBB" className={styles.instagramGrid}>
           {/* Insta Post 1 */}
           <div className={styles.instaPost}>
             <Image
@@ -291,9 +292,11 @@ export default function Home() {
               그루밍 후 한결 가벼워진 표정의 솜이 🌸🐶 #슬로우그루밍
             </div>
           </div>
-        </div>
+        {/* @ts-ignore */}
+        </behold-widget>
         <Script
           src="https://w.behold.so/widget.js"
+          type="module"
           strategy="afterInteractive"
         />
       </section>
