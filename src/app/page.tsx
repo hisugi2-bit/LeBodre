@@ -9,6 +9,7 @@ export default function Home() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioSrc, setAudioSrc] = useState("/bgm.mp3");
+  const fadeIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleAudioError = () => {
     if (audioSrc === "/bgm.mp3") {
@@ -17,12 +18,46 @@ export default function Home() {
     }
   };
 
+  const playWithFadeIn = (audioElement: HTMLAudioElement) => {
+    if (fadeIntervalRef.current) clearInterval(fadeIntervalRef.current);
+    audioElement.volume = 0;
+    audioElement.play()
+      .then(() => {
+        setIsPlaying(true);
+        let vol = 0;
+        fadeIntervalRef.current = setInterval(() => {
+          vol += 0.05;
+          if (vol >= 1) {
+            audioElement.volume = 1;
+            if (fadeIntervalRef.current) clearInterval(fadeIntervalRef.current);
+          } else {
+            audioElement.volume = vol;
+          }
+        }, 80); // Fades in over ~1.6 seconds
+      })
+      .catch((err) => console.log("Play failed:", err));
+  };
+
+  const pauseWithFadeOut = (audioElement: HTMLAudioElement) => {
+    if (fadeIntervalRef.current) clearInterval(fadeIntervalRef.current);
+    let vol = audioElement.volume;
+    fadeIntervalRef.current = setInterval(() => {
+      vol -= 0.05;
+      if (vol <= 0) {
+        audioElement.volume = 0;
+        audioElement.pause();
+        setIsPlaying(false);
+        if (fadeIntervalRef.current) clearInterval(fadeIntervalRef.current);
+      } else {
+        audioElement.volume = vol;
+      }
+    }, 40); // Fades out over ~0.8 seconds
+  };
+
   useEffect(() => {
     const handleInteraction = () => {
       if (audioRef.current && !isPlaying) {
-        audioRef.current.play()
-          .then(() => setIsPlaying(true))
-          .catch((err) => console.log("Autoplay blocked by browser policy, waiting for user click:", err));
+        playWithFadeIn(audioRef.current);
       }
       window.removeEventListener("click", handleInteraction);
       window.removeEventListener("scroll", handleInteraction);
@@ -37,18 +72,16 @@ export default function Home() {
       window.removeEventListener("click", handleInteraction);
       window.removeEventListener("scroll", handleInteraction);
       window.removeEventListener("touchstart", handleInteraction);
+      if (fadeIntervalRef.current) clearInterval(fadeIntervalRef.current);
     };
   }, [isPlaying]);
 
   const togglePlay = () => {
     if (!audioRef.current) return;
     if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
+      pauseWithFadeOut(audioRef.current);
     } else {
-      audioRef.current.play()
-        .then(() => setIsPlaying(true))
-        .catch((err) => console.log("Play failed:", err));
+      playWithFadeIn(audioRef.current);
     }
   };
 
@@ -399,23 +432,23 @@ export default function Home() {
       <div className={styles.bgmPlayerContainer}>
         <button 
           onClick={togglePlay} 
-          className={`${styles.bgmPlayBtn} ${isPlaying ? styles.isPlaying : ""}`}
+          className={styles.bgmPlayBtn}
           aria-label="Toggle Background Music"
+          title={isPlaying ? "배경음악 끄기" : "배경음악 켜기"}
         >
-          <span className={styles.bgmIcon}>
-            {isPlaying ? (
-              <span className={styles.soundWave}>
-                <span className={styles.waveBar} />
-                <span className={styles.waveBar} />
-                <span className={styles.waveBar} />
-              </span>
-            ) : (
-              "🔇"
-            )}
-          </span>
-          <span className={styles.bgmText}>
-            {isPlaying ? "BGM On" : "BGM Off"}
-          </span>
+          {isPlaying ? (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.bgmIconSvg}>
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14" className={styles.waveOuter} />
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07" className={styles.waveInner} />
+            </svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.bgmIconSvg}>
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+              <line x1="23" y1="9" x2="17" y2="15" />
+              <line x1="17" y1="9" x2="23" y2="15" />
+            </svg>
+          )}
         </button>
         <audio
           ref={audioRef}
