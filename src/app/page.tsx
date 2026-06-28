@@ -1,8 +1,57 @@
+"use client";
+
 import Image from "next/image";
 import Script from "next/script";
+import { useState, useEffect, useRef } from "react";
 import styles from "./page.module.css";
 
 export default function Home() {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioSrc, setAudioSrc] = useState("/bgm.mp3");
+
+  const handleAudioError = () => {
+    if (audioSrc === "/bgm.mp3") {
+      console.log("Local bgm.mp3 not found. Falling back to serene Mixkit spa music.");
+      setAudioSrc("https://assets.mixkit.co/music/preview/mixkit-meditation-healing-131.mp3");
+    }
+  };
+
+  useEffect(() => {
+    const handleInteraction = () => {
+      if (audioRef.current && !isPlaying) {
+        audioRef.current.play()
+          .then(() => setIsPlaying(true))
+          .catch((err) => console.log("Autoplay blocked by browser policy, waiting for user click:", err));
+      }
+      window.removeEventListener("click", handleInteraction);
+      window.removeEventListener("scroll", handleInteraction);
+      window.removeEventListener("touchstart", handleInteraction);
+    };
+
+    window.addEventListener("click", handleInteraction);
+    window.addEventListener("scroll", handleInteraction, { passive: true });
+    window.addEventListener("touchstart", handleInteraction, { passive: true });
+
+    return () => {
+      window.removeEventListener("click", handleInteraction);
+      window.removeEventListener("scroll", handleInteraction);
+      window.removeEventListener("touchstart", handleInteraction);
+    };
+  }, [isPlaying]);
+
+  const togglePlay = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play()
+        .then(() => setIsPlaying(true))
+        .catch((err) => console.log("Play failed:", err));
+    }
+  };
+
   return (
     <div className={styles.page}>
       {/* ① Header / Navigation */}
@@ -345,6 +394,37 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Floating BGM Player */}
+      <div className={styles.bgmPlayerContainer}>
+        <button 
+          onClick={togglePlay} 
+          className={`${styles.bgmPlayBtn} ${isPlaying ? styles.isPlaying : ""}`}
+          aria-label="Toggle Background Music"
+        >
+          <span className={styles.bgmIcon}>
+            {isPlaying ? (
+              <span className={styles.soundWave}>
+                <span className={styles.waveBar} />
+                <span className={styles.waveBar} />
+                <span className={styles.waveBar} />
+              </span>
+            ) : (
+              "🔇"
+            )}
+          </span>
+          <span className={styles.bgmText}>
+            {isPlaying ? "BGM On" : "BGM Off"}
+          </span>
+        </button>
+        <audio
+          ref={audioRef}
+          src={audioSrc}
+          onError={handleAudioError}
+          loop
+          preload="auto"
+        />
+      </div>
     </div>
   );
 }
