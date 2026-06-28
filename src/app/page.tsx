@@ -8,12 +8,12 @@ import styles from "./page.module.css";
 export default function Home() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [audioSrc, setAudioSrc] = useState("/bgm.mp3");
+  const [audioSrc, setAudioSrc] = useState("/Where_Silk_Rests.mp3");
   const fadeIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleAudioError = () => {
-    if (audioSrc === "/bgm.mp3") {
-      console.log("Local bgm.mp3 not found. Falling back to serene Mixkit spa music.");
+    if (audioSrc === "/Where_Silk_Rests.mp3") {
+      console.log("Local Where_Silk_Rests.mp3 not found. Falling back to serene Mixkit spa music.");
       setAudioSrc("https://assets.mixkit.co/music/preview/mixkit-meditation-healing-131.mp3");
     }
   };
