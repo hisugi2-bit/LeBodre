@@ -10,6 +10,7 @@ export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioSrc, setAudioSrc] = useState("/Where_Silk_Rests.mp3");
   const fadeIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const interactedRef = useRef(false);
 
   const handleAudioError = () => {
     if (audioSrc === "/Where_Silk_Rests.mp3") {
@@ -26,12 +27,10 @@ export default function Home() {
         setIsPlaying(true);
         let vol = 0;
         fadeIntervalRef.current = setInterval(() => {
-          vol += 0.05;
+          vol = Math.min(1, vol + 0.05);
+          audioElement.volume = vol;
           if (vol >= 1) {
-            audioElement.volume = 1;
             if (fadeIntervalRef.current) clearInterval(fadeIntervalRef.current);
-          } else {
-            audioElement.volume = vol;
           }
         }, 80); // Fades in over ~1.6 seconds
       })
@@ -42,23 +41,29 @@ export default function Home() {
     if (fadeIntervalRef.current) clearInterval(fadeIntervalRef.current);
     let vol = audioElement.volume;
     fadeIntervalRef.current = setInterval(() => {
-      vol -= 0.05;
+      vol = Math.max(0, vol - 0.05);
+      audioElement.volume = vol;
       if (vol <= 0) {
-        audioElement.volume = 0;
         audioElement.pause();
         setIsPlaying(false);
         if (fadeIntervalRef.current) clearInterval(fadeIntervalRef.current);
-      } else {
-        audioElement.volume = vol;
       }
     }, 40); // Fades out over ~0.8 seconds
   };
 
   useEffect(() => {
     const handleInteraction = () => {
+      if (interactedRef.current) {
+        cleanup();
+        return;
+      }
       if (audioRef.current && !isPlaying) {
         playWithFadeIn(audioRef.current);
       }
+      cleanup();
+    };
+
+    const cleanup = () => {
       window.removeEventListener("click", handleInteraction);
       window.removeEventListener("scroll", handleInteraction);
       window.removeEventListener("touchstart", handleInteraction);
@@ -69,14 +74,13 @@ export default function Home() {
     window.addEventListener("touchstart", handleInteraction, { passive: true });
 
     return () => {
-      window.removeEventListener("click", handleInteraction);
-      window.removeEventListener("scroll", handleInteraction);
-      window.removeEventListener("touchstart", handleInteraction);
+      cleanup();
       if (fadeIntervalRef.current) clearInterval(fadeIntervalRef.current);
     };
   }, [isPlaying]);
 
   const togglePlay = () => {
+    interactedRef.current = true;
     if (!audioRef.current) return;
     if (isPlaying) {
       pauseWithFadeOut(audioRef.current);
