@@ -8,47 +8,24 @@ import styles from "./page.module.css";
 export default function Home() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [audioSrc, setAudioSrc] = useState("/Where_Silk_Rests.mp3");
-  const fadeIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [audioError, setAudioError] = useState<string>("");
   const interactedRef = useRef(false);
 
-  const handleAudioError = () => {
-    if (audioSrc === "/Where_Silk_Rests.mp3") {
-      console.log("Local Where_Silk_Rests.mp3 not found. Falling back to serene Mixkit spa music.");
-      setAudioSrc("https://assets.mixkit.co/music/preview/mixkit-meditation-healing-131.mp3");
-    }
-  };
-
-  const playWithFadeIn = (audioElement: HTMLAudioElement) => {
-    if (fadeIntervalRef.current) clearInterval(fadeIntervalRef.current);
-    audioElement.volume = 0;
+  const playAudio = (audioElement: HTMLAudioElement) => {
+    audioElement.volume = 1;
     audioElement.play()
       .then(() => {
         setIsPlaying(true);
-        let vol = 0;
-        fadeIntervalRef.current = setInterval(() => {
-          vol = Math.min(1, vol + 0.05);
-          audioElement.volume = vol;
-          if (vol >= 1) {
-            if (fadeIntervalRef.current) clearInterval(fadeIntervalRef.current);
-          }
-        }, 80); // Fades in over ~1.6 seconds
+        setAudioError("");
       })
-      .catch((err) => console.log("Play failed:", err));
+      .catch((err) => {
+        console.error("Play failed:", err);
+      });
   };
 
-  const pauseWithFadeOut = (audioElement: HTMLAudioElement) => {
-    if (fadeIntervalRef.current) clearInterval(fadeIntervalRef.current);
-    let vol = audioElement.volume;
-    fadeIntervalRef.current = setInterval(() => {
-      vol = Math.max(0, vol - 0.05);
-      audioElement.volume = vol;
-      if (vol <= 0) {
-        audioElement.pause();
-        setIsPlaying(false);
-        if (fadeIntervalRef.current) clearInterval(fadeIntervalRef.current);
-      }
-    }, 40); // Fades out over ~0.8 seconds
+  const pauseAudio = (audioElement: HTMLAudioElement) => {
+    audioElement.pause();
+    setIsPlaying(false);
   };
 
   useEffect(() => {
@@ -57,40 +34,56 @@ export default function Home() {
         cleanup();
         return;
       }
-      if (audioRef.current && !isPlaying) {
-        playWithFadeIn(audioRef.current);
+      if (audioRef.current && audioRef.current.paused) {
+        playAudio(audioRef.current);
       }
       cleanup();
     };
 
     const cleanup = () => {
       window.removeEventListener("click", handleInteraction);
-      window.removeEventListener("scroll", handleInteraction);
       window.removeEventListener("touchstart", handleInteraction);
     };
 
     window.addEventListener("click", handleInteraction);
-    window.addEventListener("scroll", handleInteraction, { passive: true });
     window.addEventListener("touchstart", handleInteraction, { passive: true });
 
     return () => {
       cleanup();
-      if (fadeIntervalRef.current) clearInterval(fadeIntervalRef.current);
     };
-  }, [isPlaying]);
+  }, []);
 
   const togglePlay = () => {
     interactedRef.current = true;
     if (!audioRef.current) return;
     if (isPlaying) {
-      pauseWithFadeOut(audioRef.current);
+      pauseAudio(audioRef.current);
     } else {
-      playWithFadeIn(audioRef.current);
+      playAudio(audioRef.current);
     }
   };
 
   return (
     <div className={styles.page}>
+      {audioError && (
+        <div style={{
+          position: 'fixed',
+          top: '95px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: 'rgba(211, 47, 47, 0.95)',
+          color: '#fff',
+          padding: '12px 24px',
+          borderRadius: '30px',
+          zIndex: 10000,
+          boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+          fontWeight: 600,
+          fontSize: '14px',
+          backdropFilter: 'blur(8px)'
+        }}>
+          ⚠️ {audioError}
+        </div>
+      )}
       {/* ① Header / Navigation */}
       <header className={styles.header}>
         <div className={styles.logoContainer}>
@@ -335,7 +328,7 @@ export default function Home() {
             지금 이 순간, 르 보드레에서 온전한 휴식을 즐기고 있는 아이들을 만나보세요.
           </p>
         </div>
-        {/* @ts-ignore */}
+        {/* @ts-expect-error */}
         <behold-widget feed-id="f0hZVynFI7lbuVLSHYBB" className={styles.instagramGrid}>
           {/* Insta Post 1 */}
           <div className={styles.instaPost}>
@@ -378,7 +371,7 @@ export default function Home() {
               그루밍 후 한결 가벼워진 표정의 솜이 🌸🐶 #슬로우그루밍
             </div>
           </div>
-        {/* @ts-ignore */}
+        {/* @ts-expect-error */}
         </behold-widget>
         <Script
           src="https://w.behold.so/widget.js"
@@ -456,8 +449,19 @@ export default function Home() {
         </button>
         <audio
           ref={audioRef}
-          src={audioSrc}
-          onError={handleAudioError}
+          src="/Where_Silk_Rests.mp3"
+          onError={(e) => {
+            const err = audioRef.current?.error;
+            let msg = "unknown error";
+            if (err) {
+              if (err.code === 1) msg = "fetching process aborted by user";
+              else if (err.code === 2) msg = "network error";
+              else if (err.code === 3) msg = "decoding error";
+              else if (err.code === 4) msg = "audio not supported";
+            }
+            setAudioError(`Audio Load Error: ${msg} (code ${err ? err.code : '?'})`);
+            console.error("Audio error:", err);
+          }}
           loop
           preload="auto"
         />
