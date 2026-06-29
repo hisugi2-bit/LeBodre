@@ -449,7 +449,7 @@ export default function Home() {
         </button>
         <audio
           ref={audioRef}
-          src="/Where_Silk_Rests.mp3"
+          src="/lebodre_bgm.mp3"
           onError={(e) => {
             const err = audioRef.current?.error;
             let msg = "unknown error";
